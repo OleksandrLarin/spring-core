@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="myBean" name="beanName" class="com.MyBean"/>
+    <alias name="myBean" alias="aliasBeanName"/>
+    <bean name="calendarInstance" class="java.util.Calendar" factory-method="getInstance"/>
+    <bean name="calendarService" class="com.CalendarService">
+        <constructor-arg ref="calendarInstance"/>
+    </bean>
+    <bean id="calendar" class="java.util.Calendar" factory-method="getCalendar"
+          factory-bean="calendarService"/>
+
+    <!--    User Service App-->
+    <bean id="userService" class="com.service.UserServiceImpl">
+        <constructor-arg ref="userStorage"/>
+    </bean>
+    <bean id="userServiceI18n" class="com.service.UserServiceImplI18n" init-method="init">
+        <constructor-arg ref="userStorage"/>
+    </bean>
+
+    <alias name="userServiceI18n" alias="userService"/>
+    <!--Users-->
+    <bean name="userVasya" class="com.model.User" destroy-method="sayBye">
+        <property name="name" value="Vasya"/>
+        <property name="email" value="Vasya@google.com"/>
+        <property name="age" value="25"/>
+    </bean>
+
+    <bean name="userPetya" class="com.model.User" destroy-method="sayBye">
+        <property name="name" value="Petya"/>
+        <property name="email" value="Petya@google.com"/>
+        <property name="age" value="29"/>
+    </bean>
+
+    <bean name="userJohn" class="com.model.User" destroy-method="sayBye">
+        <property name="name" value="John"/>
+        <property name="email" value="John@google.com"/>
+        <property name="age" value="24"/>
+    </bean>
+
+    <bean name="userTest" class="com.model.User" lazy-init="true">
+        <property name="name" value="Test"/>
+        <property name="email" value="Test@google.com"/>
+        <property name="age" value="0"/>
+    </bean>
+
+    <!--/Users-->
+
+    <bean id="userStorage" class="com.mock.UserStorage" scope="prototype"
+          init-method="initStorage">
+        <property name="storage">
+            <map merge="true">
+                <entry key="Vasya" value-ref="userVasya"/>
+                <entry key="Petya" value-ref="userPetya"/>
+                <entry key="John" value-ref="userJohn"/>
+                <entry key="Test" value-ref="userTest"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>
